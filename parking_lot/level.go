@@ -1,50 +1,62 @@
-package parkinglot
+package parking_lot
 
 type Level struct {
-	floor        int
 	parkingSpots []*ParkingSpot
+	floor        int
 }
 
 func NewLevel(floor int, numSpots int) *Level {
-	l := &Level{}
-	l.floor = floor
-	carSpots := int(float32(numSpots) * 0.5)
-	motorcycleSpots := int(float32(numSpots) * 0.3)
-
+	level := &Level{
+		floor: floor,
+	}
+	carSpots := int(0.3 * float64(numSpots))
+	motorcycleSpots := int(0.5 * float64(numSpots))
 	for i := 0; i < carSpots; i++ {
-		l.parkingSpots = append(l.parkingSpots, &ParkingSpot{id: i + 1, vehileType: CAR})
+		level.parkingSpots = append(level.parkingSpots, &ParkingSpot{
+			VehicleType: CAR,
+			ID:          i + 1,
+		})
 	}
+
 	for i := carSpots; i < carSpots+motorcycleSpots; i++ {
-		l.parkingSpots = append(l.parkingSpots, &ParkingSpot{id: i + 1, vehileType: MOTORCYCLE})
+		level.parkingSpots = append(level.parkingSpots, &ParkingSpot{
+			VehicleType: MOTORCYCLE,
+			ID:          i + 1,
+		})
 	}
+
 	for i := carSpots + motorcycleSpots; i < numSpots; i++ {
-		l.parkingSpots = append(l.parkingSpots, &ParkingSpot{id: i + 1, vehileType: TRUCK})
+		level.parkingSpots = append(level.parkingSpots, &ParkingSpot{
+			VehicleType: TRUCK,
+			ID:          i + 1,
+		})
 	}
-	return l
+	return level
 }
 
-func (l *Level) ParkVehicle(veh Vehicle) bool {
-	for _, spot := range l.parkingSpots {
-		if spot.IsOccupied() {
+func (level *Level) ParkVehicle(licenseNumber string, vehicleType VehicleType) bool {
+	for _, spot := range level.parkingSpots {
+		if spot.IsOccupied {
 			continue
 		}
-		if spot.vehileType == veh.GetVehicleType() {
-			spot.isOccupied = true
-			spot.vehicleLicenseNumber = veh.GetLicensePlate()
+		if spot.VehicleType == vehicleType {
+			spot.IsOccupied = true
+			spot.VehicleType = vehicleType
+			spot.LicenseNumber = licenseNumber
 			return true
 		}
 	}
 	return false
 }
 
-func (l *Level) UnParkVehicle(veh Vehicle) bool {
-	for _, spot := range l.parkingSpots {
-		if !spot.IsOccupied() {
+func (level *Level) UnParkVehicle(licenseNumber string, vehicleType VehicleType) bool {
+	for _, spot := range level.parkingSpots {
+		if !spot.IsOccupied {
 			continue
 		}
-		if spot.vehicleLicenseNumber == veh.GetLicensePlate() {
-			spot.isOccupied = false
-			spot.vehicleLicenseNumber = ""
+		if spot.LicenseNumber == licenseNumber {
+			spot.IsOccupied = false
+			spot.LicenseNumber = ""
 			return true
 		}
 	}

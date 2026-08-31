@@ -1,5 +1,8 @@
-package parkinglot
+package parking_lot
 
-func NewCar(licenseNunber string) Vehicle {
-	return &BaseVehicle{LicensePlate: licenseNunber, Type: CAR}
+func NewCar(licenseNumber string) *BaseVehicle {
+	return &BaseVehicle{
+		LicenseNumber: licenseNumber,
+		VehicleType:   CAR,
+	}
 }

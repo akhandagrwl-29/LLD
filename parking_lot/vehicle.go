@@ -1,34 +1,24 @@
-package parkinglot
+package parking_lot
 
-type VehicleType int
+type VehicleType string
 
-const (
-	CAR        VehicleType = iota
-	TRUCK                  = 1
-	MOTORCYCLE             = 2
-)
-
-type Vehicle interface {
-	GetLicensePlate() string
-	GetVehicleType() VehicleType
-}
+var CAR VehicleType
+var TRUCK VehicleType
+var MOTORCYCLE VehicleType
 
 type BaseVehicle struct {
-	LicensePlate string
-	Type         VehicleType
+	LicenseNumber string
+	VehicleType   VehicleType
+}
+type Vehicle interface {
+	GetLicenseNumber() string
+	getVehicleType() VehicleType
 }
 
-func NewVehicle(licensePlate string, vehicleType VehicleType) *BaseVehicle {
-	return &BaseVehicle{
-		LicensePlate: licensePlate,
-		Type:         vehicleType,
-	}
+func (b *BaseVehicle) GetLicenseNumber() string {
+	return b.LicenseNumber
 }
 
-func (b *BaseVehicle) GetLicensePlate() string {
-	return b.LicensePlate
-}
-
-func (b *BaseVehicle) GetVehicleType() VehicleType {
-	return b.Type
+func (b *BaseVehicle) getVehicleType() VehicleType {
+	return b.VehicleType
 }

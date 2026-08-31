@@ -1,63 +1,55 @@
-package parkinglot
+package parking_lot
 
-import (
-	"errors"
-	"fmt"
-)
+import "fmt"
 
 var instance *ParkingLot
 
 type ParkingLot struct {
+	ID     int
 	levels []*Level
 }
 
-func NewParkingLot() *ParkingLot {
+func NewParkingLot(id int) *ParkingLot {
 	if instance != nil {
 		return instance
 	}
 	return &ParkingLot{
-		levels: []*Level{},
+		ID:     id,
+		levels: make([]*Level, 0),
 	}
 }
 
-func (p *ParkingLot) AddLevel(level *Level) error {
-	for _, currLevel := range p.levels {
-		if currLevel.floor == level.floor {
-			return errors.New("level already exists")
+func (parkingLot *ParkingLot) AddLevel(level *Level) {
+	parkingLot.levels = append(parkingLot.levels, level)
+}
+
+func (parkingLot *ParkingLot) ParkVehicle(vehicle Vehicle) bool {
+	for _, level := range parkingLot.levels {
+		if level.ParkVehicle(vehicle.GetLicenseNumber(), vehicle.getVehicleType()) {
+			return true
 		}
 	}
-	p.levels = append(p.levels, level)
-	return nil
+	return false
 }
 
-func (p *ParkingLot) ShowAvailability() {
-	fmt.Println("Showing Availability")
-	for idx, level := range p.levels {
-		fmt.Printf("--- Level: %d Floor: %d------\n", idx+1, level.floor)
+func (parkingLot *ParkingLot) UnParkVehicle(vehicle Vehicle) bool {
+	for _, level := range parkingLot.levels {
+		if level.UnParkVehicle(vehicle.GetLicenseNumber(), vehicle.getVehicleType()) {
+			return true
+		}
+	}
+	return false
+}
+
+func (parkingLot *ParkingLot) ShowAvailability() {
+	for _, level := range parkingLot.levels {
+		fmt.Printf("Parking Lot ID: %d and level : %d\n", parkingLot.ID, level.floor)
 		for _, spot := range level.parkingSpots {
-			if spot.IsOccupied() {
-				fmt.Printf("spot: %d is occupied with: %+v\n", spot.GetParkingSpot().id, VehicleType(spot.GetParkingSpot().vehileType))
-			} else {
-				fmt.Printf("Spot: %d is empty of vehicle type : %+v\n", spot.GetParkingSpot().id, VehicleType(spot.GetParkingSpot().vehileType))
+			status := "empty"
+			if spot.IsOccupied {
+				status = "occupied"
 			}
+			fmt.Printf("Spot: %d, status: %s, licenseNumber: %s\n", spot.ID, status, string(spot.LicenseNumber))
 		}
 	}
-}
-
-func (p *ParkingLot) ParkVehicle(vehicle Vehicle) bool {
-	for _, level := range p.levels {
-		if level.ParkVehicle(vehicle) {
-			return true
-		}
-	}
-	return false
-}
-
-func (p *ParkingLot) UnparkVehicle(vehicle Vehicle) bool {
-	for _, level := range p.levels {
-		if level.UnParkVehicle(vehicle) {
-			return true
-		}
-	}
-	return false
 }
