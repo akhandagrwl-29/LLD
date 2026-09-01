@@ -1,7 +1,7 @@
 package main
 
-import "github.com/LLD/parking_lot"
+import "github.com/LLD/movie_booking"
 
 func main() {
-	parking_lot.Run()
+	movie_booking.Run()
 }
