@@ -3,6 +3,7 @@ package movie_booking
 import (
 	"errors"
 	"fmt"
+	"sync"
 	"sync/atomic"
 )
 
@@ -14,6 +15,7 @@ type MovieBookingSystem struct {
 	shows         map[int64]*Show
 	bookings      map[string]*Booking
 	bookingsCount int64
+	mu            sync.RWMutex
 }
 
 func NewMovieBookingSystem() *MovieBookingSystem {
@@ -71,6 +73,8 @@ func (sys *MovieBookingSystem) generateBookingID() string {
 }
 
 func (sys *MovieBookingSystem) ConfirmBooking(id string) error {
+	sys.mu.Lock()
+	defer sys.mu.Unlock()
 	for _, booking := range sys.bookings {
 		if booking.getBookingID() == id {
 			booking.bookingStatus = BookingStatusConfirmed
