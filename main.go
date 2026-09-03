@@ -1,7 +1,7 @@
 package main
 
-import "github.com/LLD/fooddeliveryservice"
+import "github.com/LLD/vendingmachine"
 
 func main() {
-	fooddeliveryservice.Run()
+	vendingmachine.Run()
 }
